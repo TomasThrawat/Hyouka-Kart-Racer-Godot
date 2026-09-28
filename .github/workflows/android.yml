@@ -1,0 +1,38 @@
+name: Godot Android APK
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Godot 4.7.2
+        run: |
+          wget -q https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip
+          unzip -q Godot_v4.7.2-stable_linux.x86_64.zip
+          chmod +x Godot_v4.7.2-stable_linux.x86_64
+          sudo mv Godot_v4.7.2-stable_linux.x86_64 /usr/local/bin/godot
+
+      - name: Install Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Validate project
+        run: godot --headless --path . --editor --quit-after 2
+
+      - name: Import resources
+        run: godot --headless --path . --editor --quit-after 2
+
+      - name: Export Android APK
+        run: mkdir -p build && godot --headless --path . --export-debug Android build/HyoukaKartRacer-debug.apk
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: HyoukaKartRacer-APK
+          path: build/HyoukaKartRacer-debug.apk
+          if-no-files-found: error
