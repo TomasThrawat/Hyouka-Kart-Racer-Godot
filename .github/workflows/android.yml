@@ -42,11 +42,8 @@ jobs:
           cp /tmp/godot-templates/templates/* "$HOME/.local/share/godot/export_templates/4.7.2.stable/"
           printf '4.7.2.stable\n' > "$HOME/.local/share/godot/export_templates/4.7.2.stable/version.txt"
 
-      - name: Validate project
-        run: godot --headless --path . --editor --quit-after 2
-
       - name: Import resources
-        run: godot --headless --path . --editor --quit-after 2
+        run: godot --headless --path . --import
 
       - name: Export Android APK
         run: mkdir -p build && godot --headless --path . --export-debug Android build/HyoukaKartRacer-debug.apk
